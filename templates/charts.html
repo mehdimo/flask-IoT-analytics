@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="utf-8" />
+   <title>Sensors Chart</title>
+
+   <script src="static/Chart.bundle.js"></script>
+   <script src="static/utils.js"></script>
+</head>
+
+<body>
+
+<h1><center>Weather Measurements</center></h1>
+
+{% for item in days %}
+    <h3>Day: {{item}}</h3>
+    <canvas id="chart_{{item}}" width="800" height="300"></canvas>
+{% endfor %}
+
+<script>
+
+{% for item in days %}
+    var chart_Data = {
+    labels : [{% for item in values[item][2] %}
+                   "{{item}}",
+               {% endfor %}],
+    datasets : [
+       {
+             label:'DEWP',
+             backgroundColor: window.chartColors.blue,
+             borderColor: window.chartColors.blue,
+             fill: false,
+             data : [{% for item in values[item][0] %}
+                       {{item}},
+                     {% endfor %}]
+       },
+       {
+             label:'TEMP',
+             backgroundColor: window.chartColors.red,
+             borderColor: window.chartColors.red,
+             fill: false,
+             data : [{% for item2 in values[item][1] %}
+                       {{item2}},
+                     {% endfor %}]
+       }]
+    }
+
+    var mychart = document.getElementById("chart_{{item}}").getContext("2d");
+    var LineChartDemo = new Chart(mychart, {
+        type: 'line',
+        data: chart_Data,
+        options: {
+          responsive: false,
+          scales: {
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Hour'
+              }
+            }],
+          }
+        }
+    });
+
+{% endfor %}
+
+</script>
+
+</body>
+</html>
